@@ -3,7 +3,7 @@ import numpy as np
 from PIL import Image
 from flask import Flask, render_template, Response, request
 
-from ASL_Camera import VideoCamera, image_predict
+from camera import VideoCamera, image_predict
 
 app = Flask(__name__)
 
