@@ -1,9 +1,8 @@
-import os
 import numpy as np
 from PIL import Image
-from flask import Flask, render_template, Response, request
+from flask import Flask, render_template, request
 
-from camera import VideoCamera, image_predict
+from camera import image_predict
 
 app = Flask(__name__)
 
@@ -16,22 +15,16 @@ def index():
             if 'image' in request.files:
                 img = Image.open(request.files['image'])
                 img = img.convert('L')
-                img = img.resize((100,100))
+                img = img.resize((50,50))
                 img = np.asarray(img)
                 print(img.shape)
-                img = img.reshape((1,100,100,1))
+                img = img.reshape((1,50,50,1))
                 img = img/255.0
                 pred = image_predict(img)
         except:
-            message = "Upload Image for prediction"
+            message = "Upload an Image for Prediction"
             return render_template('index.html', message = message)
     return render_template("index.html", pred = pred, message = message)
-
-def generate(camera):
-    while True:
-        frame = camera.get_frame()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n') 
 
 if __name__=='__main__':
     app.run(debug=True)
